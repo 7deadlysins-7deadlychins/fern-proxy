@@ -1,0 +1,22 @@
+name: Deploy Rust to Pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Rust
+        run: cargo build
+      - name: Copy build to gh-pages
+        run: |
+          mkdir -p ./www
+          cp target/doc/index.html ./www/
+          cp target/doc/* ./www/
+          git checkout gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Deploy Rust build"
+          git push origin gh-pages
